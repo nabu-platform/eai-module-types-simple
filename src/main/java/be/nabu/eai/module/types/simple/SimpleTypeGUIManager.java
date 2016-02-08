@@ -6,7 +6,7 @@ import java.util.List;
 
 import be.nabu.eai.developer.MainController;
 import be.nabu.eai.developer.managers.base.BaseJAXBGUIManager;
-import be.nabu.eai.developer.managers.util.ElementSelectionListener;
+import be.nabu.eai.developer.util.ElementSelectionListener;
 import be.nabu.eai.repository.resources.RepositoryEntry;
 import be.nabu.libs.property.api.Property;
 import be.nabu.libs.property.api.Value;
