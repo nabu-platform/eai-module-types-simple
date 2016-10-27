@@ -52,13 +52,17 @@ public class SimpleTypeArtifact<T> extends JAXBArtifact<SimpleTypeConfiguration>
 	}
 
 	@Override
-	public String getName(Value<?>... values) {
-		return getParent().getName();
+	public String getName(Value<?>...values) {
+		String name = getConfig().getProperties().get("name");
+		if (name == null || name.isEmpty()) {
+			name = getId().replaceAll("^.*\\.([^.]+)$", "$1");
+		}
+		return name;
 	}
 
 	@Override
-	public String getNamespace(Value<?>... values) {
-		return getParent().getNamespace();
+	public String getNamespace(Value<?>...values) {
+		return getConfig().getProperties().get("namespace");
 	}
 
 	@Override
@@ -101,7 +105,9 @@ public class SimpleTypeArtifact<T> extends JAXBArtifact<SimpleTypeConfiguration>
 					Property<?> property = PropertyFactory.getInstance().getProperty(propertyName);
 					if (property != null) {
 						String string = getConfiguration().getProperties().get(propertyName);
-						properties.put(property, new ValueImpl(property, ConverterFactory.getInstance().getConverter().convert(string, property.getValueClass())));
+						if (string != null && !string.trim().isEmpty()) {
+							properties.put(property, new ValueImpl(property, ConverterFactory.getInstance().getConverter().convert(string, property.getValueClass())));
+						}
 					}
 				}
 			}

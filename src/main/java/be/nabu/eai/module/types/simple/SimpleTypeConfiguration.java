@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import be.nabu.eai.api.ValueEnumerator;
 import be.nabu.eai.repository.util.KeyValueMapAdapter;
 
 @XmlRootElement(name = "simpleType")
+@XmlType(propOrder = { "parent", "enumerations", "properties" })
 public class SimpleTypeConfiguration {
 	private String parent;
 	private List<String> enumerations;
