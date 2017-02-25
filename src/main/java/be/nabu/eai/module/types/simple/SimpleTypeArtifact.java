@@ -27,20 +27,36 @@ import be.nabu.libs.validator.api.Validator;
 
 public class SimpleTypeArtifact<T> extends JAXBArtifact<SimpleTypeConfiguration> implements DefinedSimpleType<T>, Marshallable<T>, Unmarshallable<T> {
 
+	private SimpleType<T> parent;
+	
 	public SimpleTypeArtifact(String id, ResourceContainer<?> directory, Repository repository) {
 		super(id, directory, repository, "simpleType.xml", SimpleTypeConfiguration.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	public SimpleType<T> getParent() {
-		try {
-			return new StringToSimpleType().convert(getConfiguration().getParent() != null && !getId().equals(getConfiguration().getParent()) ? getConfiguration().getParent() : "java.lang.String");
+		if (parent == null) {
+			synchronized(this) {
+				if (parent == null) {
+					try {
+						parent = new StringToSimpleType().convert(getConfiguration().getParent() != null && !getId().equals(getConfiguration().getParent()) ? getConfiguration().getParent() : "java.lang.String");
+					}
+					catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return parent;
 	}
 	
+	@Override
+	public void save(ResourceContainer<?> directory) throws IOException {
+		// reset parent so we can recalculate it
+		parent = null;
+		super.save(directory);
+	}
+
 	@Override
 	public String marshal(T object, Value<?>... values) {
 		return object == null ? null : ((Marshallable<T>) getParent()).marshal(object);
